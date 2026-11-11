@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Salvatore Trepiccione — Aircraft Design</title>
+  <meta name="description" content="Salvatore Trepiccione — PhD candidate at the University of Naples Federico II working on hybrid-electric and hydrogen-powered regional aircraft design.">
+  <meta name="theme-color" content="#06080c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2306080c'/%3E%3Cpath d='M32 8l4 18 18 8v4l-18-4-2 14 6 5v3l-8-2-8 2v-3l6-5-2-14-18 4v-4l18-8z' fill='%238bff9c'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Scroll progress as a flight path -->
+  <div class="progress" aria-hidden="true"><div class="progress-fill"></div></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="tooltip" role="tooltip"></div>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a href="#top" class="nav-logo" aria-label="Back to top">ST</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#heart">HEART</a>
+      <a href="#explore">Research</a>
+      <a href="#journey">Journey</a>
+      <a href="#publications">Publications</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta magnetic">Get in touch</a>
+    <button class="nav-burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" class="hero">
+    <canvas id="flow" aria-hidden="true"></canvas>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-plane" id="heroPlane" aria-hidden="true"></div>
+
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow intro" style="--i:0"><span class="live"></span><span id="heroEyebrow"></span></p>
+        <h1 class="hero-title">
+          <span class="line intro" style="--i:1">Designing</span>
+          <span class="line intro rot-line" style="--i:2"><em class="rotator" id="rotator">hybrid-electric</em></span>
+          <span class="line intro" style="--i:3">regional aircraft.</span>
+        </h1>
+        <p class="hero-sub intro" style="--i:4" id="heroSub"></p>
+        <div class="hero-actions intro" style="--i:5">
+          <a class="btn btn-primary magnetic" href="#heart">Explore HEART <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost magnetic" href="#publications">Publications</a>
+        </div>
+      </div>
+
+      <div class="hero-photo intro" style="--i:3">
+        <div class="photo-card" id="photoCard">
+          <img id="heroPhoto" alt="Portrait of Salvatore Trepiccione">
+          <div class="photo-shine"></div>
+        </div>
+        <svg class="badge" viewBox="0 0 140 140" aria-hidden="true">
+          <defs><path id="badgeCircle" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"/></defs>
+          <circle cx="70" cy="70" r="68" class="badge-bg"/>
+          <text class="badge-text"><textPath href="#badgeCircle">PHD · AIRCRAFT DESIGN · HYDROGEN · MDO · HEART · </textPath></text>
+          <path class="badge-plane" d="M70 46l3 15 14 7v3l-14-3-1.5 11 5 4v2.5l-6.5-1.5-6.5 1.5v-2.5l5-4L67 68l-14 3v-3l14-7z"/>
+        </svg>
+      </div>
+    </div>
+
+    <p class="hero-hint"><span class="hint-dot"></span>Move your cursor — it's a cylinder in potential flow</p>
+    <a class="scroll-cue" href="#about" aria-label="Scroll down"><span></span></a>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee"></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container">
+      <p class="label" data-reveal>01 — About</p>
+      <p class="words" id="profileText"></p>
+      <div class="stats" id="stats"></div>
+      <div class="flight-card" id="phdFlight" data-reveal></div>
+    </div>
+  </section>
+
+  <!-- HEART -->
+  <section id="heart" class="section section-alt">
+    <div class="container">
+      <p class="label" data-reveal>02 — HEART</p>
+      <h2 class="h2" data-reveal>One tool. <em>Every</em> architecture.</h2>
+      <p class="lead" data-reveal><strong>HEART</strong> — Hybrid-Electric Aircraft Research Tool — is the object-oriented MATLAB design environment I lead. It sizes kerosene, hydrogen fuel-cell and turboelectric regional aircraft on equal footing. Pick an architecture and hover the components.</p>
+
+      <div class="arch-tabs" role="tablist" id="archTabs" data-reveal></div>
+      <div class="arch-stage" data-reveal>
+        <div class="arch-visual" id="archVisual"></div>
+        <div class="arch-info" id="archInfo" aria-live="polite"></div>
+      </div>
+      <div class="legend" data-reveal>
+        <span><i class="sw kero"></i>Kerosene</span>
+        <span><i class="sw h2"></i>Liquid hydrogen</span>
+        <span><i class="sw elec"></i>Electric power</span>
+        <span><i class="sw batt"></i>Battery</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIZING LOOP -->
+  <section id="loop" class="section">
+    <div class="container loop-grid">
+      <div>
+        <p class="label" data-reveal>03 — The sizing loop</p>
+        <h2 class="h2" data-reveal>Iterate until it <em>converges.</em></h2>
+        <p class="lead" data-reveal>Every discipline feeds the next. The loop closes on take-off mass, while an outer loop stretches the fuselage until the cryogenic LH₂ tank fits — closing the hydrogen geometry–mass coupling. Hover a module.</p>
+        <ul class="loop-list" id="loopList" data-reveal></ul>
+      </div>
+      <div class="loop-visual" data-reveal>
+        <svg id="loopSvg" viewBox="0 0 440 440" role="img" aria-label="Animated sizing loop of HEART modules"></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN EXPLORATION -->
+  <section id="explore" class="section section-alt">
+    <div class="container">
+      <p class="label" data-reveal>04 — Design exploration</p>
+      <h2 class="h2" data-reveal>From a thousand designs to <em>one.</em></h2>
+      <p class="lead" data-reveal>Design of experiments samples the space, a response surface learns it, and SQP walks to the best design that still meets every top-level requirement — span, field lengths, approach speed, MTOW.</p>
+
+      <div class="explore">
+        <div class="explore-steps" id="exploreSteps" data-reveal>
+          <button data-step="0"><b>01</b><span>Design of experiments</span><small>Space-filling samples of the design variables</small></button>
+          <button data-step="1"><b>02</b><span>Response surface</span><small>A quadratic surrogate fitted to the samples</small></button>
+          <button data-step="2"><b>03</b><span>SQP optimisation</span><small>Constrained search on the surrogate</small></button>
+          <button class="replay" data-step="replay">↻ Replay</button>
+        </div>
+        <div class="explore-canvas" data-reveal>
+          <canvas id="exploreCanvas"></canvas>
+          <p class="explore-note">Illustrative animation of the workflow — not real HEART results.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <section id="journey" class="section">
+    <div class="container">
+      <p class="label" data-reveal>05 — Flight log</p>
+      <h2 class="h2" data-reveal>From the Canadair <em>to hydrogen.</em></h2>
+      <div class="timeline" id="timeline">
+        <div class="tl-track"><div class="tl-fill"></div><div class="tl-plane" id="tlPlane"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map" class="section section-alt">
+    <div class="container">
+      <p class="label" data-reveal>06 — Where the research flies</p>
+      <h2 class="h2" data-reveal>Naples, <em>and everywhere after.</em></h2>
+      <div class="map-wrap" data-reveal>
+        <div class="map-box"><svg id="mapSvg" viewBox="0 0 1000 560" role="img" aria-label="World map of conferences and teaching"></svg></div>
+        <ul class="map-list" id="mapList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section id="publications" class="section">
+    <div class="container">
+      <p class="label" data-reveal>07 — Publications</p>
+      <div class="pub-head">
+        <h2 class="h2" data-reveal>Papers & <em>reports.</em></h2>
+        <div class="filters" id="pubFilters" data-reveal></div>
+      </div>
+      <div class="pubs" id="pubs"></div>
+    </div>
+  </section>
+
+  <!-- TEACHING (+ theses when present) -->
+  <section id="teaching" class="section section-alt">
+    <div class="container">
+      <p class="label" data-reveal>08 — Teaching &amp; supervision</p>
+      <div class="teach" data-reveal>
+        <div class="teach-num">PHYS<br>152</div>
+        <div>
+          <h3>General Physics II — Electricity</h3>
+          <p class="muted">Sant'Anna Institute × Jacksonville University · Sorrento · Jun–Jul 2026</p>
+          <p>A 4-credit summer course (with the 1-credit PHYS 332 lab) taught in English, built on my own lecture notes, two mid-course exams, laboratory reports and a final exam.</p>
+        </div>
+      </div>
+      <div id="thesesBlock" hidden>
+        <h3 class="h3" data-reveal>Co-supervised theses</h3>
+        <div class="theses" id="theses"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section">
+    <div class="container">
+      <p class="label" data-reveal>09 — Toolbox</p>
+      <h2 class="h2" data-reveal>What I <em>work with.</em></h2>
+      <div class="bento" id="bento"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <div class="runway-scene" aria-hidden="true">
+      <div class="sky-stars"></div>
+      <div class="takeoff" id="takeoff"></div>
+      <div class="runway"><div class="runway-marks"></div></div>
+    </div>
+    <div class="container contact-inner">
+      <p class="label" data-reveal>10 — Contact</p>
+      <h2 class="contact-title" data-reveal>Let's design the aircraft <em>of 2040.</em></h2>
+      <div class="contact-actions" data-reveal>
+        <a class="btn btn-primary btn-xl magnetic" id="mailBtn" href="#">Email me</a>
+        <button class="btn btn-ghost btn-xl magnetic" id="copyBtn" type="button">Copy address</button>
+      </div>
+      <div class="contact-links" id="contactLinks" data-reveal></div>
+    </div>
+    <footer class="footer container">
+      <span id="footName"></span>
+      <span>Built with care in Naples · <a href="#top">Back to top ↑</a></span>
+    </footer>
+  </section>
+
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="#about">About</a><a href="#heart">HEART</a><a href="#explore">Research</a>
+    <a href="#journey">Journey</a><a href="#publications">Publications</a><a href="#contact">Contact</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
