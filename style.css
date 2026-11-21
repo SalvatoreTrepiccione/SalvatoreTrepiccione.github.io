@@ -309,6 +309,12 @@ body.has-cursor .cursor-dot, body.has-cursor .cursor-ring { opacity: 1; }
 .ac-disc { fill: rgba(255, 255, 255, .09); stroke: rgba(255, 255, 255, .18); stroke-width: .8; }
 .ac-prop { stroke: #2b3440; stroke-width: 5; stroke-linecap: round; transform-box: fill-box; transform-origin: center; animation: prop .14s linear infinite; }
 @keyframes prop { 0% { transform: scaleY(1); } 50% { transform: scaleY(-1); } 100% { transform: scaleY(1); } }
+.ac-bladesx { transform-box: fill-box; transform-origin: center; animation: propx .14s linear infinite; }
+@keyframes propx { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } 100% { transform: scaleX(1); } }
+.ac-seats rect { fill: rgba(64, 76, 92, .5); }
+.ac-tail { transform-box: view-box; transition: transform 1.1s var(--ease); }
+.part { opacity: 0; transition: opacity .6s var(--ease); }
+.part.on { opacity: 1; }
 .ac-blades { transform-box: fill-box; transform-origin: center; animation: prop .14s linear infinite; }
 .ac-blade { fill: #1e2631; }
 .arch-visual svg { filter: drop-shadow(0 26px 24px rgba(0, 0, 0, .55)); }

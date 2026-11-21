@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- Source of og-image.png (the link preview). Rebuild with headless Chrome:
+     chrome --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,627
+            --virtual-time-budget=8000 --allow-file-access-from-files --screenshot=og-image.png og/og-image.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  html, body { margin: 0; width: 1200px; height: 627px; overflow: hidden; background: #06080c; }
+  body::after { display: none; }
+  .card { position: relative; width: 1200px; height: 627px; overflow: hidden;
+    background:
+      radial-gradient(520px 420px at 1010px 120px, rgba(94,231,255,.16), transparent 70%),
+      radial-gradient(520px 380px at 160px 600px, rgba(139,255,156,.10), transparent 70%),
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 40px 40px,
+      #06080c; }
+  #lines { position: absolute; inset: 0; }
+  .text { position: absolute; left: 72px; top: 92px; width: 640px; z-index: 3; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 500 14px var(--mono); color: #8b95a7; letter-spacing: .03em;
+    padding: 8px 16px 8px 12px; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; background: rgba(10,13,19,.7); }
+  .eyebrow i { width: 9px; height: 9px; border-radius: 50%; background: #8bff9c; box-shadow: 0 0 0 5px rgba(139,255,156,.15); }
+  .name { font: 600 66px/1 var(--sans); letter-spacing: -.045em; color: #eef2f7; margin: 34px 0 18px; }
+  .head { font: 500 38px/1.12 var(--sans); letter-spacing: -.03em; color: #c5ccd8; margin: 0; }
+  .head em { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.12em; background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .05em; }
+  .bottom { position: absolute; left: 72px; bottom: 64px; display: flex; align-items: center; gap: 14px; z-index: 3; }
+  .url { font: 600 19px var(--sans); color: #06080c; background: #8bff9c; padding: 12px 20px; border-radius: 999px; box-shadow: 0 0 40px rgba(139,255,156,.3); }
+  .tag { font: 500 14px var(--mono); color: #c5ccd8; padding: 10px 14px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,13,19,.6); }
+  .photo { position: absolute; left: 832px; top: 112px; width: 290px; height: 362px; border-radius: 26px; overflow: hidden; z-index: 2;
+    border: 1px solid rgba(255,255,255,.16); box-shadow: 0 40px 80px -20px rgba(0,0,0,.8); transform: rotate(3deg); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; filter: saturate(.9) contrast(1.05); }
+  .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(6,8,12,.5)); }
+  .plane { position: absolute; z-index: 4; width: 300px; left: 600px; top: 330px; transform: rotate(62deg); filter: drop-shadow(0 26px 24px rgba(0,0,0,.6)); }
+  .plane svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .plane .ac-bladesx, .plane .flow { animation: none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <svg id="lines" viewBox="0 0 1200 627"></svg>
+  <div class="text">
+    <span class="eyebrow"><i></i>PHD CANDIDATE · UNIVERSITY OF NAPLES FEDERICO II</span>
+    <h1 class="name">Salvatore Trepiccione</h1>
+    <p class="head">Designing <em>hybrid-electric</em> and <em>hydrogen</em> regional aircraft.</p>
+  </div>
+  <div class="bottom">
+    <span class="url">salvatoretrepiccione.github.io</span>
+    <span class="tag">HEART</span><span class="tag">LH₂</span><span class="tag">MDO</span>
+  </div>
+  <div class="photo"><img src="../salvatore.webp" alt=""></div>
+  <div class="plane" id="plane"></div>
+</div>
+<script src="../aircraft.js"></script>
+<script>
+  var pl = document.getElementById('plane');
+  pl.innerHTML = Aircraft.planform(); Aircraft.setArch(pl, 'fc');
+  pl.querySelector('.stretch-note').remove();
+
+  // Streamlines of uniform flow past a cylinder centred behind the portrait
+  var svg = document.getElementById('lines'), cx = 977, cy = 293, R = 250, out = '';
+  function vel(x, y) {
+    var dx = x - cx, dy = y - cy, r2 = dx * dx + dy * dy, r4 = r2 * r2, R2 = R * R;
+    return [1 - R2 * (dx * dx - dy * dy) / r4, -2 * R2 * dx * dy / r4];
+  }
+  for (var y0 = -60; y0 <= 690; y0 += 15) {
+    if (Math.abs(y0 - cy) < 5) continue;
+    var x = -20, y = y0, pts = [[x, y]];
+    for (var i = 0; i < 900 && x < 1230; i++) {
+      var v = vel(x, y), sp = Math.hypot(v[0], v[1]);
+      x += v[0] / sp * 3; y += v[1] / sp * 3;
+      if (i % 3 === 0) pts.push([x.toFixed(1), y.toFixed(1)]);
+    }
+    var near = Math.abs(y0 - cy) < R * 1.35;
+    var col = near ? (Math.abs(y0 - cy) < R * 1.12 ? 'rgba(139,255,156,.38)' : 'rgba(94,231,255,.30)') : 'rgba(94,231,255,.12)';
+    out += '<path d="M' + pts.join('L') + '" fill="none" stroke="' + col + '" stroke-width="' + (near ? 1.4 : 1) + '"/>';
+  }
+  out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="none" stroke="rgba(139,255,156,.25)" stroke-dasharray="3 7"/>';
+  svg.innerHTML = out;
+</script>
+</body>
+</html>

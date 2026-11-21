@@ -43,111 +43,7 @@
   var mqHtml = mq.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join('');
   $('#marquee').innerHTML = mqHtml + mqHtml;
 
-  /* =======================================================
-     Aircraft planform (top view, nose to the right)
-     ======================================================= */
-  var STRETCH = 1.07;
-  var S = function (x) { return +(40 + (x - 40) * STRETCH).toFixed(1); };
-
-  function comp(archs, tip, inner) {
-    return '<g class="comp" data-a="' + archs + '" data-tip="' + esc(tip) + '">' + inner + '</g>';
-  }
-  function flow(archs, cls, d) {
-    return '<path class="flow ' + cls + '" data-a="' + archs + '" d="' + d + '"/>';
-  }
-
-  var UID = 0;
-  function planform() {
-    var u = 'ac' + (UID++);
-    var g = function (n) { return 'url(#' + u + n + ')'; };
-    var defs = '<defs>' +
-      '<linearGradient id="' + u + 'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8592a5"/><stop offset=".28" stop-color="#eef2f7"/><stop offset=".48" stop-color="#ffffff"/><stop offset=".74" stop-color="#d5dce6"/><stop offset="1" stop-color="#7a8699"/></linearGradient>' +
-      '<linearGradient id="' + u + 'w" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#e6ebf2"/><stop offset="1" stop-color="#a9b4c3"/></linearGradient>' +
-      '<linearGradient id="' + u + 'a" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5ee7ff"/><stop offset="1" stop-color="#8bff9c"/></linearGradient>' +
-      '<radialGradient id="' + u + 'p"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".24"/></radialGradient>' +
-      '<linearGradient id="' + u + 'g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25425a"/><stop offset="1" stop-color="#04080d"/></linearGradient>' +
-      '</defs>';
-    var edge = ' stroke="rgba(6,8,12,.2)" stroke-width=".8"';
-    var nac = function (y) {
-      return '<path fill="' + g('b') + '"' + edge + ' d="M350 ' + y + ' C350 ' + (y - 7) + ' 345 ' + (y - 9.5) + ' 336 ' + (y - 9.5) + ' L272 ' + (y - 8) +
-        ' C252 ' + (y - 6.5) + ' 240 ' + (y - 3.5) + ' 232 ' + y + ' C240 ' + (y + 3.5) + ' 252 ' + (y + 6.5) + ' 272 ' + (y + 8) +
-        ' L336 ' + (y + 9.5) + ' C345 ' + (y + 9.5) + ' 350 ' + (y + 7) + ' 350 ' + y + ' Z"/>' +
-        '<path d="M338 ' + (y - 9) + ' L338 ' + (y + 9) + '" stroke="rgba(6,8,12,.28)" stroke-width="1.2"/>';
-    };
-    var blade = function (y) {
-      return '<path class="ac-blade" d="M357 ' + y + ' L355.2 ' + (y - 44) + ' Q357 ' + (y - 48.5) + ' 358.8 ' + (y - 44) + ' Z M357 ' + y +
-        ' L355.2 ' + (y + 44) + ' Q357 ' + (y + 48.5) + ' 358.8 ' + (y + 44) + ' Z"/>';
-    };
-    var prop = function (y, d) {
-      return '<ellipse cx="357" cy="' + y + '" rx="5" ry="48" fill="' + g('p') + '"/>' +
-        '<g class="ac-blades" style="animation-delay:' + d + 's">' + blade(y) + '</g>' +
-        '<g class="ac-blades" style="animation-delay:' + (d - 0.035) + 's">' + blade(y) + '</g>' +
-        '<path fill="' + g('b') + '"' + edge + ' d="M349 ' + (y - 7) + ' Q370 ' + y + ' 349 ' + (y + 7) + ' Z"/>';
-    };
-    var sides = [-1, 1];
-    var nacComps = sides.map(function (s) {
-      var y = 230 + s * 82;
-      return comp('conv sp', 'Gas turbine|Burns kerosene and drives the propeller shaft.',
-          '<rect class="c-kero" x="300" y="' + (y - 6.5) + '" width="28" height="13" rx="3"/><text x="314" y="' + (y + 4) + '" text-anchor="middle">GT</text>') +
-        comp('fc te sp', 'Electric motor|Turns the propeller using electric power.',
-          '<rect class="c-elec" x="331" y="' + (y - 6) + '" width="14" height="12" rx="3"/>');
-    }).join('');
-
-    var flows = sides.map(function (s) {
-      var c = 230;
-      return flow('conv sp', 'f-kero', 'M280 ' + (c + s * 40) + ' Q290 ' + (c + s * 62) + ' 304 ' + (c + s * 76)) +
-        flow('te', 'f-kero', 'M272 ' + (c + s * 36) + ' Q256 ' + (c + s * 20) + ' ' + (S(232) + 2) + ' ' + (c + s * 8)) +
-        flow('fc sp', 'f-elec', 'M' + S(355) + ' ' + (c + s * 17) + ' Q' + S(355) + ' ' + (c + s * 60) + ' 338 ' + (c + s * 77)) +
-        flow('te', 'f-elec', 'M' + S(232) + ' ' + (c + s * 10) + ' Q300 ' + (c + s * 50) + ' 335 ' + (c + s * 77)) +
-        flow('sp', 'f-batt', 'M' + S(214) + ' ' + (c + s * 18) + ' Q' + (S(214) + 40) + ' ' + (c + s * 70) + ' 331 ' + (c + s * 79));
-    }).join('') +
-      flow('fc sp', 'f-h2', 'M' + S(174) + ' 230 L' + S(330) + ' 230') +
-      flow('te', 'f-h2', 'M' + S(174) + ' 230 L' + S(196) + ' 230');
-
-    return '<svg viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + defs +
-      '<g class="ac-body" style="transform-origin:40px 230px">' +
-        '<path fill="' + g('b') + '"' + edge + ' d="M492 230 C490 221 472 209 442 209 L152 209 C112 209 72 221 36 227 L33 230 L36 233 C72 239 112 251 152 251 L442 251 C472 251 490 239 492 230 Z"/>' +
-        '<path d="M160 221.5 L438 221.5" stroke="#fff" stroke-opacity=".75" stroke-width="2" stroke-linecap="round"/>' +
-        comp('fc te sp', 'Cryogenic LH₂ tank|Sized by a surrogate inside the loop; the fuselage stretches until it fits.',
-          '<rect class="c-h2" x="104" y="215" width="70" height="30" rx="15"/><text x="139" y="234" text-anchor="middle">LH₂</text>') +
-        comp('fc sp', 'Fuel-cell stacks|Convert hydrogen into electric power.',
-          '<rect class="c-elec" x="330" y="215" width="14" height="30" rx="2"/><rect class="c-elec" x="348" y="215" width="14" height="30" rx="2"/><rect class="c-elec" x="366" y="215" width="14" height="30" rx="2"/>') +
-        comp('te', 'Turbogenerator|Burns kerosene and hydrogen to generate electric power.',
-          '<rect class="c-kero" x="196" y="214" width="36" height="32" rx="6"/><text x="214" y="234" text-anchor="middle">TG</text>') +
-        comp('sp', 'Battery pack A|One of the two independent battery sources.',
-          '<rect class="c-batt" x="196" y="213" width="36" height="15" rx="3"/><text x="214" y="224.5" text-anchor="middle">B1</text>') +
-        comp('sp', 'Battery pack B|The second battery source of the 4-source architecture.',
-          '<rect class="c-batt" x="196" y="232" width="36" height="15" rx="3"/><text x="214" y="243.5" text-anchor="middle">B2</text>') +
-        '<path fill="' + g('g') + '" d="M472 219 C483 223 485 237 472 241 L458 239 C463 234 463 226 458 221 Z"/>' +
-        '<path d="M467 222.5 C473 225 475 229 474 232" stroke="#9fe9ff" stroke-opacity=".7" stroke-width="1.2" fill="none"/>' +
-      '</g>' +
-      '<path fill="' + g('a') + '" d="M30 230 L100 225.5 Q110 230 100 234.5 Z"/>' +
-      '<path fill="' + g('w') + '"' + edge + ' d="M54 230 L68 170 Q70 165 75 165 L85 165 Q90 165 90 171 L102 230 L90 289 Q90 295 85 295 L75 295 Q70 295 68 290 Z"/>' +
-      '<path d="M71 167 L87 167 M71 293 L87 293" stroke="#8bff9c" stroke-width="2.5" stroke-linecap="round"/>' +
-      nac(148) + nac(312) +
-      '<path fill="' + g('w') + '"' + edge + ' d="M248 230 L264 22 Q266 14 274 14 L290 14 Q297 14 297 22 L312 230 L297 438 Q297 446 290 446 L274 446 Q266 446 264 438 Z"/>' +
-      '<path d="M270 40 L258.5 200 M258.5 260 L270 420" stroke="rgba(6,8,12,.16)" stroke-width="1" fill="none"/>' +
-      '<path d="M297 24 L311 230 L297 436" stroke="#fff" stroke-width="1.6" fill="none"/>' +
-      '<path d="M273 15.5 L291 15.5 M273 444.5 L291 444.5" stroke="#8bff9c" stroke-width="2.5" stroke-linecap="round"/>' +
-      '<ellipse cx="282" cy="230" rx="42" ry="14" fill="' + g('b') + '"' + edge + '/>' +
-      comp('conv te sp', 'Wing fuel tanks|Kerosene stored in the wing box.',
-        '<path class="c-kero" d="M256 200 L268 44 L293 44 L304 200 Z"/><path class="c-kero" d="M256 260 L268 416 L293 416 L304 260 Z"/>') +
-      nacComps +
-      prop(148, 0) + prop(312, -0.05) +
-      flows +
-      '<text class="stretch-note" x="54" y="334">↔ fuselage stretched for LH₂</text>' +
-    '</svg>';
-  }
-
-  function setArch(svgRoot, id) {
-    $$('[data-a]', svgRoot).forEach(function (el) {
-      el.classList.toggle('on', el.getAttribute('data-a').split(' ').indexOf(id) !== -1);
-    });
-    var stretched = id !== 'conv';
-    $('.ac-body', svgRoot).style.transform = stretched ? 'scaleX(' + STRETCH + ')' : 'scaleX(1)';
-    var note = $('.stretch-note', svgRoot);
-    if (note) note.classList.toggle('on', stretched);
-  }
+  var planform = window.Aircraft.planform, setArch = window.Aircraft.setArch;
 
   /* =======================================================
      Hero: potential-flow field + flying hydrogen-electric aircraft
@@ -191,14 +87,14 @@
     var COLORS = ['rgba(94,231,255,.11)', 'rgba(94,231,255,.42)', 'rgba(139,255,156,.9)'];
 
     function planePose(now) {
-      var w = planeEl.offsetWidth, h = w * 460 / 520;
+      var w = planeEl.offsetWidth, h = w * 540 / 600;
       var T = 15000, t = (now % T) / T;
       var pos = function (t) {
         return [lerp(-0.35 * W, 1.25 * W, t), lerp(0.92 * H, 0.08 * H, t) + Math.sin(t * Math.PI * 2) * 0.07 * H];
       };
       var a = pos(t), b = pos(t + 0.002);
       var ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
-      return { x: a[0], y: a[1], ang: ang, w: w, h: h, s: w / 520 };
+      return { x: a[0], y: a[1], ang: ang, w: w, h: h, s: w / 600 };
     }
 
     function frame(now) {
@@ -243,13 +139,13 @@
 
       // aircraft + electric contrails from the nacelles
       var pose = planePose(now);
-      planeEl.style.transform = 'translate(' + (pose.x - pose.w / 2) + 'px,' + (pose.y - pose.h / 2) + 'px) rotate(' + pose.ang + 'rad)';
+      planeEl.style.transform = 'translate(' + (pose.x - pose.w / 2) + 'px,' + (pose.y - pose.h / 2) + 'px) rotate(' + (pose.ang + Math.PI / 2) + 'rad)';
       var ca = Math.cos(pose.ang), sa = Math.sin(pose.ang);
-      [[-14, -82], [-14, 82], [-220, 0]].forEach(function (o, idx) {
+      [[-12, -150], [-12, -64], [-12, 64], [-12, 150], [-206, 0]].forEach(function (o, idx) {
         var lx = o[0] * pose.s, ly = o[1] * pose.s;
         var x = pose.x + lx * ca - ly * sa, y = pose.y + lx * sa + ly * ca;
-        if (idx < 2 || Math.random() < 0.3) {
-          sparks.push({ x: x, y: y, vx: -ca * 1.2 + (Math.random() - 0.5) * 0.5, vy: -sa * 1.2 + (Math.random() - 0.5) * 0.5, life: 1, c: idx === 2 ? '94,231,255' : '139,255,156' });
+        if (idx < 4 || Math.random() < 0.3) {
+          sparks.push({ x: x, y: y, vx: -ca * 1.2 + (Math.random() - 0.5) * 0.5, vy: -sa * 1.2 + (Math.random() - 0.5) * 0.5, life: 1, c: idx === 4 ? '94,231,255' : '139,255,156' });
         }
       });
       ctx.globalCompositeOperation = 'lighter';
@@ -269,7 +165,7 @@
     window.addEventListener('resize', resize);
     if (REDUCED) {
       var pose = planePose(5200);
-      planeEl.style.transform = 'translate(' + (pose.x - pose.w / 2) + 'px,' + (pose.y - pose.h / 2) + 'px) rotate(' + pose.ang + 'rad)';
+      planeEl.style.transform = 'translate(' + (pose.x - pose.w / 2) + 'px,' + (pose.y - pose.h / 2) + 'px) rotate(' + (pose.ang + Math.PI / 2) + 'rad)';
       ring.remove();
       return;
     }
@@ -384,13 +280,13 @@
       desc: 'The yardstick every alternative is measured against, sized under exactly the same top-level requirements as the hybrid concepts.',
       points: ['Mission module benchmarked against ATR 72-500 block-fuel data — within 0.5 %', 'Segment-based mission and field performance', 'Same TLARs as every other architecture'] },
     { id: 'fc', short: 'LH₂ fuel cell', name: 'Hydrogen fuel cell', tag: 'Zero in-flight CO₂',
-      chain: 'LH₂ → fuel cells → electric motors → propellers',
-      desc: 'Liquid hydrogen from a cryogenic tank feeds fuel-cell stacks, and electric motors turn the propellers.',
+      chain: 'LH₂ → fuel cells → electric motors → four propellers',
+      desc: 'Liquid hydrogen from cryogenic tanks behind the cabin feeds a fuel-cell stack in every nacelle, and electric motors turn four propellers.',
       points: ['Cryogenic LH₂ tank surrogate inside the sizing loop', 'Outer loop stretches the fuselage until the tank fits', 'Per-source energy bookkeeping along the mission'] },
-    { id: 'te', short: 'Turboelectric', name: 'Kerosene–hydrogen turboelectric', tag: 'Dual fuel',
-      chain: 'Kerosene + LH₂ → turbogenerator → electric motors → propellers',
-      desc: 'A turbogenerator fed by kerosene and hydrogen produces electric power for the propeller motors.',
-      points: ['Dual storage: wing fuel tanks plus a cryogenic LH₂ tank', 'Electric power distributed to the propulsors', 'Compared on equal footing with the other concepts'] },
+    { id: 'te', short: 'GT + FC', name: 'Turbo-electric GT + FC', tag: 'Dual fuel',
+      chain: 'Kerosene → turbogenerators + LH₂ → fuel cells → electric motors → four propellers',
+      desc: 'Gas turbines and fuel cells share the job: kerosene feeds turbogenerators, hydrogen feeds fuel cells, and both power four electric propellers.',
+      points: ['Dual storage: kerosene wing tanks plus cryogenic LH₂ tanks', 'Electric power distributed to four propulsors', 'Compared on equal footing with the other concepts'] },
     { id: 'sp', short: '4-source SPPH', name: 'Four-source serial-parallel hybrid', tag: 'MSc thesis · SHARP',
       chain: 'Gas turbine + fuel cell + battery A + battery B → propellers',
       desc: 'From my MSc thesis: I extended the SHARP Java API from three to four energy sources in a serial-parallel partial-hybrid architecture.',
