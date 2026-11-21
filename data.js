@@ -42,6 +42,15 @@ window.SITE = {
     funding: "Doctoral scholarship funded by SmartUp Engineering"
   },
 
+  // "Now" section — what you're working on these days. status: short label on the card.
+  now: [
+    { status: "Writing", title: "PhD dissertation", text: "Multidisciplinary design exploration of multi-source hybrid-electric regional aircraft — expected October 2027.", tag: "PhD" },
+    { status: "Running", title: "Design-space exploration", text: "Mapping the feasible design space of an 80-passenger fuel-cell regional aircraft (AST-2 FC) with HEART.", tag: "HEART" },
+    { status: "Target Q1 2027", title: "First-author journal article", text: "A full journal paper from my PhD research on hybrid-electric and hydrogen regional aircraft.", tag: "Journal" },
+    { status: "Upcoming", title: "Research stay at DLR", text: "A research period abroad at the German Aerospace Center (DLR) in Hamburg.", tag: "Abroad" },
+    { status: "Writing", title: "An aircraft design book", text: "Turning aircraft design lecture slides into a single, coherent textbook.", tag: "Teaching" }
+  ],
+
   // Flight log (chronological)
   journey: [
     {
@@ -63,6 +72,11 @@ window.SITE = {
       when: "Jun — Jul 2026", title: "Instructor — General Physics II (Electricity)", where: "Sant'Anna Institute × Jacksonville University · Sorrento",
       badge: "Teaching",
       text: "Taught PHYS 152 (4 credits) with PHYS 332 (1 credit) in English, with self-authored lecture notes, two mid-course exams, laboratory reports and a final exam."
+    },
+    {
+      when: "Upcoming", title: "Research stay abroad", where: "DLR — German Aerospace Center · Hamburg, Germany",
+      badge: "Upcoming",
+      text: "A research period at DLR in Hamburg, as part of my PhD."
     }
   ],
 
@@ -72,6 +86,7 @@ window.SITE = {
     { id: "trn", city: "Turin",    coords: [7.69, 45.07],   what: "CEAS Aerospace Europe · AIDAA", tag: "CEAS 2025", detail: "Dec 2025 · Sustainable aircraft propulsion with four energy sources" },
     { id: "syd", city: "Sydney",   coords: [151.21, -33.87], what: "ICAS 2026", detail: "Sep 2026 · two papers: hybrid-electric design exploration, winglet design" },
     { id: "xian", city: "Xi'an",   coords: [108.94, 34.34], what: "ICGA 2026", detail: "Nov 2026 · techno-economic assessment, 100-pax regional aircraft" },
+    { id: "ham", city: "Hamburg",  coords: [9.99, 53.55],   what: "DLR · German Aerospace Center", tag: "DLR · upcoming", detail: "Upcoming research stay abroad" },
     { id: "sor", city: "Sorrento", coords: [14.38, 40.63],  what: "Teaching", detail: "Jun–Jul 2026 · General Physics II, Jacksonville University programme", short: true }
   ],
 

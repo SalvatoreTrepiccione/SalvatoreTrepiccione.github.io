@@ -39,6 +39,7 @@
     <a href="#top" class="nav-logo" aria-label="Back to top">ST</a>
     <nav class="nav-links" aria-label="Sections">
       <a href="#about">About</a>
+      <a href="#now">Now</a>
       <a href="#heart">HEART</a>
       <a href="#explore">Research</a>
       <a href="#journey">Journey</a>
@@ -103,10 +104,19 @@
     </div>
   </section>
 
+  <!-- NOW -->
+  <section id="now" class="section section-alt">
+    <div class="container">
+      <p class="label" data-reveal>02 — Now</p>
+      <h2 class="h2" data-reveal>What I'm <em>working on.</em></h2>
+      <div class="now-grid" id="nowGrid"></div>
+    </div>
+  </section>
+
   <!-- HEART -->
   <section id="heart" class="section section-alt">
     <div class="container">
-      <p class="label" data-reveal>02 — HEART</p>
+      <p class="label" data-reveal>03 — HEART</p>
       <h2 class="h2" data-reveal>One tool. <em>Every</em> architecture.</h2>
       <p class="lead" data-reveal><strong>HEART</strong> — Hybrid-Electric Aircraft Research Tool — is the object-oriented MATLAB design environment I lead. It sizes kerosene, hydrogen fuel-cell and turboelectric regional aircraft on equal footing. Pick an architecture and hover the components.</p>
 
@@ -124,17 +134,20 @@
     </div>
   </section>
 
-  <!-- SIZING LOOP -->
+  <!-- HEART WORKFLOWS -->
   <section id="loop" class="section">
-    <div class="container loop-grid">
-      <div>
-        <p class="label" data-reveal>03 — The sizing loop</p>
-        <h2 class="h2" data-reveal>Iterate until it <em>converges.</em></h2>
-        <p class="lead" data-reveal>Every discipline feeds the next. The loop closes on take-off mass, while an outer loop stretches the fuselage until the cryogenic LH₂ tank fits — closing the hydrogen geometry–mass coupling. Hover a module.</p>
-        <ul class="loop-list" id="loopList" data-reveal></ul>
-      </div>
-      <div class="loop-visual" data-reveal>
-        <svg id="loopSvg" viewBox="0 0 440 440" role="img" aria-label="Animated sizing loop of HEART modules"></svg>
+    <div class="container">
+      <p class="label" data-reveal>04 — Two workflows</p>
+      <h2 class="h2" data-reveal>Size one aircraft, <em>or a thousand.</em></h2>
+      <div class="wf-grid">
+        <div data-reveal>
+          <div class="arch-tabs" role="tablist" id="wfTabs"></div>
+          <div class="arch-info wf-info" id="wfInfo" aria-live="polite"></div>
+        </div>
+        <div class="loop-visual" data-reveal>
+          <svg id="wfSvg" viewBox="-70 0 660 460" role="img" aria-label="Animated HEART workflow loops"></svg>
+          <p class="wf-status" id="wfStatus"></p>
+        </div>
       </div>
     </div>
   </section>
@@ -142,7 +155,7 @@
   <!-- DESIGN EXPLORATION -->
   <section id="explore" class="section section-alt">
     <div class="container">
-      <p class="label" data-reveal>04 — Design exploration</p>
+      <p class="label" data-reveal>05 — Design exploration</p>
       <h2 class="h2" data-reveal>From a thousand designs to <em>one.</em></h2>
       <p class="lead" data-reveal>Design of experiments samples the space, a response surface learns it, and SQP walks to the best design that still meets every top-level requirement — span, field lengths, approach speed, MTOW.</p>
 
@@ -164,7 +177,7 @@
   <!-- JOURNEY -->
   <section id="journey" class="section">
     <div class="container">
-      <p class="label" data-reveal>05 — Flight log</p>
+      <p class="label" data-reveal>06 — Flight log</p>
       <h2 class="h2" data-reveal>From the Canadair <em>to hydrogen.</em></h2>
       <div class="timeline" id="timeline">
         <div class="tl-track"><div class="tl-fill"></div><div class="tl-plane" id="tlPlane"></div></div>
@@ -175,7 +188,7 @@
   <!-- MAP -->
   <section id="map" class="section section-alt">
     <div class="container">
-      <p class="label" data-reveal>06 — Where the research flies</p>
+      <p class="label" data-reveal>07 — Where the research flies</p>
       <h2 class="h2" data-reveal>Naples, <em>and everywhere after.</em></h2>
       <div class="map-wrap" data-reveal>
         <div class="map-box"><svg id="mapSvg" viewBox="0 0 1000 560" role="img" aria-label="World map of conferences and teaching"></svg></div>
@@ -187,7 +200,7 @@
   <!-- PUBLICATIONS -->
   <section id="publications" class="section">
     <div class="container">
-      <p class="label" data-reveal>07 — Publications</p>
+      <p class="label" data-reveal>08 — Publications</p>
       <div class="pub-head">
         <h2 class="h2" data-reveal>Papers & <em>reports.</em></h2>
         <div class="filters" id="pubFilters" data-reveal></div>
@@ -199,7 +212,7 @@
   <!-- TEACHING (+ theses when present) -->
   <section id="teaching" class="section section-alt">
     <div class="container">
-      <p class="label" data-reveal>08 — Teaching &amp; supervision</p>
+      <p class="label" data-reveal>09 — Teaching &amp; supervision</p>
       <div class="teach" data-reveal>
         <div class="teach-num">PHYS<br>152</div>
         <div>
@@ -218,7 +231,7 @@
   <!-- SKILLS -->
   <section id="skills" class="section">
     <div class="container">
-      <p class="label" data-reveal>09 — Toolbox</p>
+      <p class="label" data-reveal>10 — Toolbox</p>
       <h2 class="h2" data-reveal>What I <em>work with.</em></h2>
       <div class="bento" id="bento"></div>
     </div>
@@ -232,7 +245,7 @@
       <div class="runway"><div class="runway-marks"></div></div>
     </div>
     <div class="container contact-inner">
-      <p class="label" data-reveal>10 — Contact</p>
+      <p class="label" data-reveal>11 — Contact</p>
       <h2 class="contact-title" data-reveal>Let's design the aircraft <em>of 2040.</em></h2>
       <div class="contact-actions" data-reveal>
         <a class="btn btn-primary btn-xl magnetic" id="mailBtn" href="#">Email me</a>
@@ -247,7 +260,7 @@
   </section>
 
   <div class="mobile-menu" id="mobileMenu" hidden>
-    <a href="#about">About</a><a href="#heart">HEART</a><a href="#explore">Research</a>
+    <a href="#about">About</a><a href="#now">Now</a><a href="#heart">HEART</a><a href="#explore">Research</a>
     <a href="#journey">Journey</a><a href="#publications">Publications</a><a href="#contact">Contact</a>
   </div>
 

@@ -56,64 +56,82 @@
     return '<path class="flow ' + cls + '" data-a="' + archs + '" d="' + d + '"/>';
   }
 
+  var UID = 0;
   function planform() {
+    var u = 'ac' + (UID++);
+    var g = function (n) { return 'url(#' + u + n + ')'; };
+    var defs = '<defs>' +
+      '<linearGradient id="' + u + 'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8592a5"/><stop offset=".28" stop-color="#eef2f7"/><stop offset=".48" stop-color="#ffffff"/><stop offset=".74" stop-color="#d5dce6"/><stop offset="1" stop-color="#7a8699"/></linearGradient>' +
+      '<linearGradient id="' + u + 'w" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#e6ebf2"/><stop offset="1" stop-color="#a9b4c3"/></linearGradient>' +
+      '<linearGradient id="' + u + 'a" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5ee7ff"/><stop offset="1" stop-color="#8bff9c"/></linearGradient>' +
+      '<radialGradient id="' + u + 'p"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".24"/></radialGradient>' +
+      '<linearGradient id="' + u + 'g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25425a"/><stop offset="1" stop-color="#04080d"/></linearGradient>' +
+      '</defs>';
+    var edge = ' stroke="rgba(6,8,12,.2)" stroke-width=".8"';
     var nac = function (y) {
-      return '<path class="ac-nacelle" d="M352 ' + y + ' C352 ' + (y - 8) + ' 345 ' + (y - 10) + ' 338 ' + (y - 10) + ' L248 ' + (y - 8) +
-        ' C241 ' + (y - 6) + ' 241 ' + (y + 6) + ' 248 ' + (y + 8) + ' L338 ' + (y + 10) + ' C345 ' + (y + 10) + ' 352 ' + (y + 8) + ' 352 ' + y + ' Z"/>';
+      return '<path fill="' + g('b') + '"' + edge + ' d="M350 ' + y + ' C350 ' + (y - 7) + ' 345 ' + (y - 9.5) + ' 336 ' + (y - 9.5) + ' L272 ' + (y - 8) +
+        ' C252 ' + (y - 6.5) + ' 240 ' + (y - 3.5) + ' 232 ' + y + ' C240 ' + (y + 3.5) + ' 252 ' + (y + 6.5) + ' 272 ' + (y + 8) +
+        ' L336 ' + (y + 9.5) + ' C345 ' + (y + 9.5) + ' 350 ' + (y + 7) + ' 350 ' + y + ' Z"/>' +
+        '<path d="M338 ' + (y - 9) + ' L338 ' + (y + 9) + '" stroke="rgba(6,8,12,.28)" stroke-width="1.2"/>';
     };
-    var prop = function (y, delay) {
-      return '<ellipse class="ac-disc" cx="359" cy="' + y + '" rx="3.5" ry="44"/>' +
-        '<line class="ac-prop" style="animation-delay:' + delay + 's" x1="359" y1="' + (y - 42) + '" x2="359" y2="' + (y + 42) + '"/>' +
-        '<circle class="ac-spinner" cx="355" cy="' + y + '" r="6"/>';
+    var blade = function (y) {
+      return '<path class="ac-blade" d="M357 ' + y + ' L355.2 ' + (y - 44) + ' Q357 ' + (y - 48.5) + ' 358.8 ' + (y - 44) + ' Z M357 ' + y +
+        ' L355.2 ' + (y + 44) + ' Q357 ' + (y + 48.5) + ' 358.8 ' + (y + 44) + ' Z"/>';
+    };
+    var prop = function (y, d) {
+      return '<ellipse cx="357" cy="' + y + '" rx="5" ry="48" fill="' + g('p') + '"/>' +
+        '<g class="ac-blades" style="animation-delay:' + d + 's">' + blade(y) + '</g>' +
+        '<g class="ac-blades" style="animation-delay:' + (d - 0.035) + 's">' + blade(y) + '</g>' +
+        '<path fill="' + g('b') + '"' + edge + ' d="M349 ' + (y - 7) + ' Q370 ' + y + ' 349 ' + (y + 7) + ' Z"/>';
     };
     var sides = [-1, 1];
     var nacComps = sides.map(function (s) {
       var y = 230 + s * 82;
       return comp('conv sp', 'Gas turbine|Burns kerosene and drives the propeller shaft.',
-          '<rect class="c-kero" x="302" y="' + (y - 7) + '" width="28" height="14" rx="3"/><text x="316" y="' + (y + 4) + '" text-anchor="middle">GT</text>') +
+          '<rect class="c-kero" x="300" y="' + (y - 6.5) + '" width="28" height="13" rx="3"/><text x="314" y="' + (y + 4) + '" text-anchor="middle">GT</text>') +
         comp('fc te sp', 'Electric motor|Turns the propeller using electric power.',
-          '<rect class="c-elec" x="332" y="' + (y - 6) + '" width="14" height="12" rx="3"/>');
+          '<rect class="c-elec" x="331" y="' + (y - 6) + '" width="14" height="12" rx="3"/>');
     }).join('');
 
     var flows = sides.map(function (s) {
       var c = 230;
-      return flow('conv sp', 'f-kero', 'M280 ' + (c + s * 40) + ' Q290 ' + (c + s * 62) + ' 306 ' + (c + s * 76)) +
+      return flow('conv sp', 'f-kero', 'M280 ' + (c + s * 40) + ' Q290 ' + (c + s * 62) + ' 304 ' + (c + s * 76)) +
         flow('te', 'f-kero', 'M272 ' + (c + s * 36) + ' Q256 ' + (c + s * 20) + ' ' + (S(232) + 2) + ' ' + (c + s * 8)) +
-        flow('fc sp', 'f-elec', 'M' + S(355) + ' ' + (c + s * 17) + ' Q' + S(355) + ' ' + (c + s * 60) + ' 339 ' + (c + s * 77)) +
-        flow('te', 'f-elec', 'M' + S(232) + ' ' + (c + s * 10) + ' Q300 ' + (c + s * 50) + ' 336 ' + (c + s * 77)) +
-        flow('sp', 'f-batt', 'M' + S(214) + ' ' + (c + s * 18) + ' Q' + (S(214) + 40) + ' ' + (c + s * 70) + ' 332 ' + (c + s * 79));
+        flow('fc sp', 'f-elec', 'M' + S(355) + ' ' + (c + s * 17) + ' Q' + S(355) + ' ' + (c + s * 60) + ' 338 ' + (c + s * 77)) +
+        flow('te', 'f-elec', 'M' + S(232) + ' ' + (c + s * 10) + ' Q300 ' + (c + s * 50) + ' 335 ' + (c + s * 77)) +
+        flow('sp', 'f-batt', 'M' + S(214) + ' ' + (c + s * 18) + ' Q' + (S(214) + 40) + ' ' + (c + s * 70) + ' 331 ' + (c + s * 79));
     }).join('') +
-      flow('fc sp', 'f-h2', 'M' + S(172) + ' 230 L' + S(330) + ' 230') +
-      flow('te', 'f-h2', 'M' + S(172) + ' 230 L' + S(196) + ' 230');
+      flow('fc sp', 'f-h2', 'M' + S(174) + ' 230 L' + S(330) + ' 230') +
+      flow('te', 'f-h2', 'M' + S(174) + ' 230 L' + S(196) + ' 230');
 
-    return '<svg viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      // fuselage + internal systems (stretchable)
+    return '<svg viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + defs +
       '<g class="ac-body" style="transform-origin:40px 230px">' +
-        '<path class="ac-skin" d="M480 230 C480 214 462 208 440 208 L120 208 C90 208 60 222 40 230 C60 238 90 252 120 252 L440 252 C462 252 480 246 480 230 Z"/>' +
-        '<path class="ac-line" d="M120 230 L440 230"/>' +
+        '<path fill="' + g('b') + '"' + edge + ' d="M492 230 C490 221 472 209 442 209 L152 209 C112 209 72 221 36 227 L33 230 L36 233 C72 239 112 251 152 251 L442 251 C472 251 490 239 492 230 Z"/>' +
+        '<path d="M160 221.5 L438 221.5" stroke="#fff" stroke-opacity=".75" stroke-width="2" stroke-linecap="round"/>' +
         comp('fc te sp', 'Cryogenic LH₂ tank|Sized by a surrogate inside the loop; the fuselage stretches until it fits.',
-          '<rect class="c-h2" x="100" y="213" width="72" height="34" rx="17"/><text x="136" y="234" text-anchor="middle">LH₂</text>') +
+          '<rect class="c-h2" x="104" y="215" width="70" height="30" rx="15"/><text x="139" y="234" text-anchor="middle">LH₂</text>') +
         comp('fc sp', 'Fuel-cell stacks|Convert hydrogen into electric power.',
-          '<rect class="c-elec" x="330" y="214" width="14" height="32" rx="2"/><rect class="c-elec" x="348" y="214" width="14" height="32" rx="2"/><rect class="c-elec" x="366" y="214" width="14" height="32" rx="2"/>') +
+          '<rect class="c-elec" x="330" y="215" width="14" height="30" rx="2"/><rect class="c-elec" x="348" y="215" width="14" height="30" rx="2"/><rect class="c-elec" x="366" y="215" width="14" height="30" rx="2"/>') +
         comp('te', 'Turbogenerator|Burns kerosene and hydrogen to generate electric power.',
-          '<rect class="c-kero" x="196" y="213" width="36" height="34" rx="6"/><text x="214" y="234" text-anchor="middle">TG</text>') +
+          '<rect class="c-kero" x="196" y="214" width="36" height="32" rx="6"/><text x="214" y="234" text-anchor="middle">TG</text>') +
         comp('sp', 'Battery pack A|One of the two independent battery sources.',
-          '<rect class="c-batt" x="196" y="212" width="36" height="16" rx="3"/><text x="214" y="224" text-anchor="middle">B1</text>') +
+          '<rect class="c-batt" x="196" y="213" width="36" height="15" rx="3"/><text x="214" y="224.5" text-anchor="middle">B1</text>') +
         comp('sp', 'Battery pack B|The second battery source of the 4-source architecture.',
-          '<rect class="c-batt" x="196" y="232" width="36" height="16" rx="3"/><text x="214" y="244" text-anchor="middle">B2</text>') +
-        '<path class="ac-glass" d="M462 218 C470 222 472 238 462 242 L452 240 C456 234 456 226 452 220 Z"/>' +
+          '<rect class="c-batt" x="196" y="232" width="36" height="15" rx="3"/><text x="214" y="243.5" text-anchor="middle">B2</text>') +
+        '<path fill="' + g('g') + '" d="M472 219 C483 223 485 237 472 241 L458 239 C463 234 463 226 458 221 Z"/>' +
+        '<path d="M467 222.5 C473 225 475 229 474 232" stroke="#9fe9ff" stroke-opacity=".7" stroke-width="1.2" fill="none"/>' +
       '</g>' +
-      // tail
-      '<path class="ac-skin-2" d="M40 230 L104 226.5 L110 230 L104 233.5 Z"/>' +
-      '<path class="ac-wing" d="M50 230 L62 172 L84 172 L96 230 L84 288 L62 288 Z"/>' +
-      '<path class="ac-line" d="M62 172 L62 288"/>' +
-      // nacelles below the high wing
+      '<path fill="' + g('a') + '" d="M30 230 L100 225.5 Q110 230 100 234.5 Z"/>' +
+      '<path fill="' + g('w') + '"' + edge + ' d="M54 230 L68 170 Q70 165 75 165 L85 165 Q90 165 90 171 L102 230 L90 289 Q90 295 85 295 L75 295 Q70 295 68 290 Z"/>' +
+      '<path d="M71 167 L87 167 M71 293 L87 293" stroke="#8bff9c" stroke-width="2.5" stroke-linecap="round"/>' +
       nac(148) + nac(312) +
-      // wing
-      '<path class="ac-wing" d="M250 230 L264 18 L292 18 L306 230 L292 442 L264 442 Z"/>' +
-      '<path class="ac-line" d="M262 40 L262 420 M296 40 L296 420"/>' +
+      '<path fill="' + g('w') + '"' + edge + ' d="M248 230 L264 22 Q266 14 274 14 L290 14 Q297 14 297 22 L312 230 L297 438 Q297 446 290 446 L274 446 Q266 446 264 438 Z"/>' +
+      '<path d="M270 40 L258.5 200 M258.5 260 L270 420" stroke="rgba(6,8,12,.16)" stroke-width="1" fill="none"/>' +
+      '<path d="M297 24 L311 230 L297 436" stroke="#fff" stroke-width="1.6" fill="none"/>' +
+      '<path d="M273 15.5 L291 15.5 M273 444.5 L291 444.5" stroke="#8bff9c" stroke-width="2.5" stroke-linecap="round"/>' +
+      '<ellipse cx="282" cy="230" rx="42" ry="14" fill="' + g('b') + '"' + edge + '/>' +
       comp('conv te sp', 'Wing fuel tanks|Kerosene stored in the wing box.',
-        '<path class="c-kero" d="M257 200 L267 44 L289 44 L299 200 Z"/><path class="c-kero" d="M257 260 L267 416 L289 416 L299 260 Z"/>') +
+        '<path class="c-kero" d="M256 200 L268 44 L293 44 L304 200 Z"/><path class="c-kero" d="M256 260 L268 416 L293 416 L304 260 Z"/>') +
       nacComps +
       prop(148, 0) + prop(312, -0.05) +
       flows +
@@ -347,6 +365,16 @@
     }, { threshold: 0.5 });
   })();
 
+  /* Now */
+  if (D.now && D.now.length) {
+    $('#nowGrid').innerHTML = D.now.map(function (n, i) {
+      var live = /writing|running/i.test(n.status);
+      return '<article class="now-card' + (/off the clock/i.test(n.status) ? ' off' : '') + '" data-reveal style="--d:' + (i % 3) * 0.07 + 's">' +
+        '<div class="now-top"><span class="now-status">' + (live ? '<span class="live"></span>' : '') + esc(n.status) + '</span><span class="now-tag">' + esc(n.tag) + '</span></div>' +
+        '<h3>' + esc(n.title) + '</h3><p>' + esc(n.text) + '</p></article>';
+    }).join('');
+  } else { $('#now').remove(); }
+
   /* =======================================================
      HEART architecture viewer
      ======================================================= */
@@ -425,86 +453,130 @@
   /* =======================================================
      Sizing loop
      ======================================================= */
-  (function sizingLoop() {
-    var MODS = [
-      ['Geometry', 'Geometry synthesis, with tail rescaling at constant volume coefficients.'],
-      ['Weights & balance', 'Component masses, take-off mass build-up and centre of gravity.'],
-      ['Aerodynamics', 'Lift and drag of the updated configuration.'],
-      ['Powertrain', 'Multi-source powertrain: turbines, fuel cells, batteries, motors.'],
-      ['Mission', 'Segment-based mission with per-source energy bookkeeping.'],
-      ['Field performance', 'Take-off and landing field lengths, approach speed.'],
-      ['LH₂ tank', 'Cryogenic tank surrogate; the fuselage stretches until it fits.']
+  (function workflows() {
+    var FUEL = [
+      ['W&B', 'Weights & balance', 'Component masses, take-off mass and centre of gravity.'],
+      ['Aero', 'Aerodynamics', 'Lift and drag of the current configuration.'],
+      ['Mission', 'Mission', 'The design mission: simplified in HEART or detailed in SHARP.'],
+      ['Fuel', 'Fuel-weight update', 'New fuel weight from the mission; repeat until it stops changing.']
     ];
-    var svg = $('#loopSvg'), list = $('#loopList');
-    var cx = 220, cy = 220, R = 150, n = MODS.length;
-    svg.setAttribute('viewBox', '-40 0 520 440');
-    var ang = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / n; };
+    var WF = {
+      base: {
+        name: 'HEART Baseline', tag: 'One aircraft, sized to convergence',
+        lead: 'Sizes a single aircraft taken from the hangar. Every pass runs the disciplines in sequence and updates the fuel weight, until the fuel of the design mission stops changing.',
+        input: ['Aircraft from the hangar', 'Run setup'],
+        output: ['Converged aircraft', 'Summary & convergence plots'],
+        rings: [{ label: 'Fuel-weight loop', speed: 8000, mods: FUEL }]
+      },
+      doe: {
+        name: 'HEART DOE', tag: 'A whole design space, then the optimum',
+        lead: 'Sweeps a grid of wing area, aspect ratio, gas-turbine and fuel-cell power. Each design point nests the fuel loop inside a hydrogen tank–fuselage loop; the results build a response surface for a constrained optimisation.',
+        input: ['Study setup · variables & TLARs', 'Optional screening on the matching chart'],
+        output: ['Response surface', 'Constrained optimum (fmincon)', 'Design-space maps'],
+        rings: [
+          { label: 'Design-point loop', speed: 20000, mods: [
+            ['Geometry', 'Geometry', 'Wing placed for the target static margin; tails rescaled at constant volume coefficients.'],
+            ['LH₂ tank', 'LH₂ tank & fuselage', 'Tanks sized on the mission fuel; the fuselage stretches behind the cabin until they fit.'],
+            ['Performance', 'Performance', 'Maximum cruise Mach, block fuel and MTOW, checked against the TLARs.'],
+            ['Store', 'Store result', 'One row of the response-surface table per design point.']
+          ] },
+          { label: 'Fuel-weight loop', speed: 5000, mods: FUEL }
+        ]
+      }
+    };
 
-    function wrap(text, max) {
-      var out = [], line = '';
-      text.split(' ').forEach(function (w) {
-        if ((line + ' ' + w).trim().length > max) { out.push(line.trim()); line = w; } else line += ' ' + w;
+    var svg = $('#wfSvg'), info = $('#wfInfo'), tabs = $('#wfTabs'), status = $('#wfStatus');
+    var cx = 260, cy = 230, state = null, running = false, last = 0, hover = null;
+
+    function ringHtml(ring, ri, R, small) {
+      var n = ring.mods.length, arc = 0.75;
+      var h = '<circle class="loop-ring" cx="' + cx + '" cy="' + cy + '" r="' + R + '"/>' +
+        '<g class="wf-rot" data-r="' + ri + '"><path class="loop-arc" d="M' + (cx + R * Math.cos(-arc)) + ' ' + (cy + R * Math.sin(-arc)) +
+        ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + cy + '"/><circle class="loop-dot" cx="' + (cx + R) + '" cy="' + cy + '" r="' + (small ? 5 : 6) + '"/></g>';
+      ring.mods.forEach(function (m, i) {
+        var a = -Math.PI / 2 + i * 2 * Math.PI / n, x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+        h += '<g class="loop-node' + (small ? ' small' : '') + '" data-r="' + ri + '" data-i="' + i + '"><circle cx="' + x + '" cy="' + y + '" r="' + (small ? 21 : 24) + '"/>';
+        if (small) h += '<text class="idx" x="' + x + '" y="' + (y + 4) + '">' + esc(m[0]) + '</text>';
+        else {
+          var c = Math.cos(a), anchor = c > 0.3 ? 'start' : c < -0.3 ? 'end' : 'middle';
+          var lx = cx + (R + (anchor === 'middle' ? 0 : 34)) * c, ly = cy + (R + 40) * Math.sin(a) + 5;
+          if (anchor !== 'middle') ly = y + 5;
+          h += '<text class="idx" x="' + x + '" y="' + (y + 4) + '">0' + (i + 1) + '</text>' +
+            '<text class="name" x="' + lx + '" y="' + ly + '" style="text-anchor:' + anchor + '">' + esc(m[0]) + '</text>';
+        }
+        h += '</g>';
       });
-      if (line.trim()) out.push(line.trim());
-      return out;
+      return h;
     }
 
-    var arcLen = 0.7;
-    var html = '<defs><linearGradient id="loopGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8bff9c" stop-opacity="0"/><stop offset="1" stop-color="#8bff9c"/></linearGradient></defs>' +
-      '<circle class="loop-ring" cx="' + cx + '" cy="' + cy + '" r="' + R + '"/>' +
-      '<g id="loopRot"><path class="loop-arc" d="M' + (cx + R * Math.cos(-arcLen)) + ' ' + (cy + R * Math.sin(-arcLen)) + ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + cy + '"/>' +
-      '<circle class="loop-dot" cx="' + (cx + R) + '" cy="' + cy + '" r="6"/></g>';
-    MODS.forEach(function (m, i) {
-      var a = ang(i), x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
-      var lx = cx + (R + 44) * Math.cos(a), ly = cy + (R + 44) * Math.sin(a) + 5;
-      var anchor = Math.cos(a) > 0.3 ? 'start' : Math.cos(a) < -0.3 ? 'end' : 'middle';
-      if (anchor !== 'middle') lx = cx + (R + 36) * Math.cos(a);
-      html += '<g class="loop-node" data-i="' + i + '"><circle cx="' + x + '" cy="' + y + '" r="22"/>' +
-        '<text class="idx" x="' + x + '" y="' + (y + 4) + '">0' + (i + 1) + '</text>' +
-        '<text class="name" x="' + lx + '" y="' + ly + '" style="text-anchor:' + anchor + '">' + esc(m[0]) + '</text></g>';
-    });
-    html += '<g class="loop-center"><text class="t1" x="' + cx + '" y="' + (cy - 30) + '"></text><text class="t2" x="' + cx + '" y="' + (cy - 4) + '"></text><text class="t3" x="' + cx + '" y="' + (cy + 62) + '"></text></g>';
-    svg.innerHTML = html;
-    list.innerHTML = MODS.map(function (m, i) { return '<li data-i="' + i + '"><b>0' + (i + 1) + '</b><span>' + esc(m[0]) + '</span></li>'; }).join('');
-
-    var rot = $('#loopRot', svg), t1 = $('.t1', svg), t2 = $('.t2', svg), t3 = $('.t3', svg);
-    var nodes = $$('.loop-node', svg), items = $$('li', list);
-    var active = -1, hover = -1, iter = 1, residual = 0.21, converged = 0;
-
-    function setActive(i) {
-      if (i === active) return; active = i;
-      nodes.forEach(function (nd, k) { nd.classList.toggle('on', k === i); });
-      items.forEach(function (li, k) { li.classList.toggle('on', k === i); });
-      t1.textContent = MODS[i][0];
-      t2.innerHTML = wrap(MODS[i][1], 28).map(function (l, k) {
-        return '<tspan x="' + cx + '" dy="' + (k ? 18 : 0) + '">' + esc(l) + '</tspan>';
+    function show(id) {
+      var w = WF[id];
+      state = { id: id, w: w, theta: w.rings.map(function () { return 0; }), prev: w.rings.map(function () { return 0; }), active: w.rings.map(function () { return 0; }), iter: 1, res: 0.21, conv: false, point: 1 };
+      $$('button', tabs).forEach(function (b) { b.setAttribute('aria-selected', b.dataset.id === id); });
+      var two = w.rings.length > 1;
+      svg.innerHTML = '<defs><linearGradient id="loopGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8bff9c" stop-opacity="0"/><stop offset="1" stop-color="#8bff9c"/></linearGradient></defs>' +
+        (two ? ringHtml(w.rings[0], 0, 185, false) + ringHtml(w.rings[1], 1, 82, true) +
+          '<text class="wf-center" x="' + cx + '" y="' + (cy + 4) + '">FUEL LOOP</text>'
+          : ringHtml(w.rings[0], 0, 150, false) +
+          '<g class="loop-center"><text class="t1" x="' + cx + '" y="' + (cy - 18) + '"></text><text class="t2" x="' + cx + '" y="' + (cy + 6) + '"></text></g>');
+      var list = w.rings.map(function (r, ri) {
+        return '<li class="wf-head">' + esc(r.label) + '</li>' + r.mods.map(function (m, i) {
+          return '<li data-r="' + ri + '" data-i="' + i + '"><b>' + (ri ? '·' : '0' + (i + 1)) + '</b><span>' + esc(m[1]) + '<small>' + esc(m[2]) + '</small></span></li>';
+        }).join('');
       }).join('');
+      info.innerHTML = '<div class="fade"><span class="tag">' + esc(w.tag) + '</span></div>' +
+        '<p class="fade wf-lead">' + esc(w.lead) + '</p>' +
+        '<div class="wf-io fade"><span>In</span>' + w.input.map(function (x) { return '<i>' + esc(x) + '</i>'; }).join('') + '</div>' +
+        '<ul class="loop-list wf-list fade">' + list + '</ul>' +
+        '<div class="wf-io fade"><span>Out</span>' + w.output.map(function (x) { return '<i>' + esc(x) + '</i>'; }).join('') + '</div>';
+      $$('.wf-list li[data-r], .loop-node', $('#loop')).forEach(function (el) {
+        el.addEventListener('pointerenter', function () { hover = [+el.dataset.r, +el.dataset.i]; paint(); });
+        el.addEventListener('pointerleave', function () { hover = null; paint(); });
+      });
+      paint(); setStatus();
+    }
+
+    function paint() {
+      var w = state.w;
+      w.rings.forEach(function (r, ri) {
+        var a = hover && hover[0] === ri ? hover[1] : state.active[ri];
+        if (!r.mods[a]) a = 0;
+        $$('.loop-node[data-r="' + ri + '"]', svg).forEach(function (n) { n.classList.toggle('on', +n.dataset.i === a); });
+        $$('.wf-list li[data-r="' + ri + '"]', info).forEach(function (li) { li.classList.toggle('on', +li.dataset.i === a); });
+        if (ri === 0 && w.rings.length === 1) {
+          $('.t1', svg).textContent = r.mods[a][1];
+          $('.t2', svg).textContent = r.label;
+        }
+      });
     }
     function setStatus() {
-      t3.textContent = converged ? 'Converged ✓ — mass loop closed' : 'Iteration ' + iter + ' · residual ' + residual.toExponential(1);
+      var fuel = state.conv ? 'fuel weight converged ✓' : 'fuel iteration ' + state.iter + ' · Δfuel ' + state.res.toExponential(1);
+      status.textContent = state.id === 'doe' ? 'Design point ' + state.point + ' · ' + fuel : fuel;
     }
-    [nodes, items].forEach(function (group) {
-      group.forEach(function (el) {
-        el.addEventListener('pointerenter', function () { hover = +el.dataset.i; setActive(hover); });
-        el.addEventListener('pointerleave', function () { hover = -1; });
-      });
-    });
 
-    var theta = 0, prevIdx = 0, running = false, last = 0;
-    setActive(0); setStatus();
+    tabs.innerHTML = '<button role="tab" data-id="base" aria-selected="true">HEART Baseline</button><button role="tab" data-id="doe" aria-selected="false">HEART DOE</button>';
+    tabs.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.id); });
+    show('base');
+
     function frame(now) {
       if (!running) return;
-      var dt = Math.min(50, now - last); last = now;
-      if (hover < 0) theta += dt / 9000 * Math.PI * 2;
-      rot.setAttribute('transform', 'rotate(' + (theta * 180 / Math.PI - 90) + ' ' + cx + ' ' + cy + ')');
-      var idx = Math.floor(((theta % (2 * Math.PI)) + 1e-6) / (2 * Math.PI / n)) % n;
-      if (hover < 0) setActive(idx);
-      if (idx === 0 && prevIdx === n - 1) {
-        if (converged) { converged = 0; iter = 1; residual = 0.21; }
-        else { iter++; residual *= 0.32; if (residual < 1e-3) converged = 1; }
-        setStatus();
-      }
-      prevIdx = idx;
+      var dt = Math.max(0, Math.min(50, now - last)); last = now;
+      var w = state.w, inner = w.rings.length - 1;
+      w.rings.forEach(function (r, ri) {
+        if (!hover) state.theta[ri] += dt / r.speed * Math.PI * 2;
+        var n = r.mods.length, idx = Math.floor((state.theta[ri] % (2 * Math.PI)) / (2 * Math.PI / n)) % n;
+        var g = $('.wf-rot[data-r="' + ri + '"]', svg);
+        if (g) g.setAttribute('transform', 'rotate(' + (state.theta[ri] * 180 / Math.PI - 90) + ' ' + cx + ' ' + cy + ')');
+        if (idx === 0 && state.prev[ri] === n - 1) {
+          if (ri === inner) {
+            if (state.conv) { state.conv = false; state.iter = 1; state.res = 0.21; }
+            else { state.iter++; state.res *= 0.3; if (state.res < 1e-3) state.conv = true; }
+          } else { state.point++; }
+          setStatus();
+        }
+        state.prev[ri] = idx; state.active[ri] = idx;
+      });
+      paint();
       requestAnimationFrame(frame);
     }
     if (!REDUCED) onVisible(svg, function (v) {
@@ -758,7 +830,7 @@
       var plane = gPlanes.append('path').attr('class', 'map-plane').attr('d', GLYPH).style('opacity', 0).node();
       routes.push({ id: p.id, path: path, len: len, plane: plane, off: Math.random() });
     });
-    var LBL = { nap: [10, 18, 'start'], trn: [-10, -8, 'end'], syd: [12, 5, 'start'], xian: [12, -8, 'start'], sor: [0, 0, 'start'] };
+    var LBL = { nap: [10, 18, 'start'], trn: [-10, -8, 'end'], syd: [12, 5, 'start'], xian: [12, -8, 'start'], ham: [10, -8, 'start'], sor: [0, 0, 'start'] };
     D.places.forEach(function (p) {
       var xy = proj(p.coords), l = LBL[p.id] || [10, 4, 'start'];
       var g = gCities.append('g').attr('class', 'map-city' + (p.home ? ' home' : '')).attr('transform', 'translate(' + xy + ')');
@@ -888,27 +960,36 @@
   }).join('');
 
   var windows = '';
-  for (var wx = 140; wx <= 322; wx += 14) windows += '<rect class="ac-glass" x="' + wx + '" y="72" width="7" height="8" rx="2"/>';
+  for (var wx = 140; wx <= 326; wx += 13) windows += '<rect x="' + wx + '" y="70" width="7" height="8" rx="2.5" fill="#0b1520"/>';
   $('#takeoff').innerHTML =
-    '<svg viewBox="0 0 400 150" aria-hidden="true">' +
-      '<defs><radialGradient id="exh"><stop offset="0" stop-color="#8bff9c" stop-opacity=".9"/><stop offset="1" stop-color="#8bff9c" stop-opacity="0"/></radialGradient></defs>' +
+    '<svg viewBox="0 0 400 150" aria-hidden="true"><defs>' +
+      '<linearGradient id="toB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#e2e8ef"/><stop offset="1" stop-color="#8f9bad"/></linearGradient>' +
+      '<linearGradient id="toA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset="1" stop-color="#8bff9c"/></linearGradient>' +
+      '<linearGradient id="toL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8bff9c" stop-opacity="0"/><stop offset=".3" stop-color="#8bff9c"/><stop offset="1" stop-color="#5ee7ff"/></linearGradient>' +
+      '<radialGradient id="toP"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".7" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity=".25"/></radialGradient>' +
+      '<radialGradient id="exh"><stop offset="0" stop-color="#8bff9c" stop-opacity=".9"/><stop offset="1" stop-color="#8bff9c" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="toG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a4a63"/><stop offset="1" stop-color="#04080d"/></linearGradient>' +
+    '</defs>' +
       '<g id="gear" style="transition:opacity .5s, transform .5s;transform-origin:270px 98px">' +
-        '<line x1="215" y1="96" x2="215" y2="122" stroke="#7e8a9b" stroke-width="4"/><circle cx="215" cy="128" r="8" fill="#141a23" stroke="#7e8a9b" stroke-width="2.5"/>' +
-        '<line x1="330" y1="96" x2="330" y2="124" stroke="#7e8a9b" stroke-width="3"/><circle cx="330" cy="129" r="6" fill="#141a23" stroke="#7e8a9b" stroke-width="2"/>' +
+        '<path d="M232 84 L229 118" stroke="#6f7b8c" stroke-width="3.5"/><circle cx="229" cy="124" r="8" fill="#121821" stroke="#6f7b8c" stroke-width="2.5"/><circle cx="229" cy="124" r="2.5" fill="#6f7b8c"/>' +
+        '<path d="M346 97 L344 119" stroke="#6f7b8c" stroke-width="3"/><circle cx="344" cy="125" r="6" fill="#121821" stroke="#6f7b8c" stroke-width="2"/>' +
       '</g>' +
-      '<path class="ac-skin-2" d="M44 62 L20 10 L44 10 L94 64 Z"/>' +
-      '<path class="ac-wing" d="M8 9 L64 9 L62 15 L12 15 Z"/>' +
-      '<path class="ac-skin" d="M372 84 C370 70 352 64 330 64 L110 64 C80 64 58 60 40 56 L36 66 C60 78 92 98 124 98 L338 98 C358 98 372 92 372 84 Z"/>' +
+      '<path fill="url(#toA)" d="M50 57 L23 9 Q22 5 27 5 L45 5 Q49 5 51 9 L98 63 Z"/>' +
+      '<path fill="url(#toB)" d="M10 7 L68 7 Q72 8.5 68 10.5 L14 10.5 Z"/>' +
+      '<path fill="url(#toB)" stroke="rgba(6,8,12,.2)" stroke-width=".8" d="M380 86 C379 74 364 64 338 63 L122 62 C94 62 66 58 46 54 L41 60 C63 74 97 98 129 98 L342 98 C364 98 379 94 380 86 Z"/>' +
+      '<path d="M124 64.5 L336 65.5" stroke="#fff" stroke-width="1.5" opacity=".9"/>' +
       windows +
-      '<rect x="110" y="86" width="232" height="2.5" fill="#8bff9c"/>' +
-      '<rect x="110" y="89.5" width="232" height="1.5" fill="#5ee7ff"/>' +
-      '<path class="ac-glass" d="M346 70 L362 74 L357 79 L343 78 Z"/>' +
-      '<path class="ac-wing" d="M176 60 C194 53 236 53 254 58 L254 63 L176 63 Z"/>' +
-      '<ellipse cx="200" cy="76" rx="26" ry="5" fill="url(#exh)" id="exhaust"/>' +
-      '<path class="ac-nacelle" d="M206 64 L262 64 C272 64 278 69 278 74 C278 79 272 82 262 82 L212 82 Z"/>' +
-      '<ellipse class="ac-disc" cx="283" cy="73" rx="3" ry="29"/>' +
-      '<line class="ac-prop" x1="283" y1="46" x2="283" y2="100"/>' +
-      '<path class="ac-spinner" d="M278 67 C286 68 289 72 289 73 C289 74 286 78 278 79 Z"/>' +
+      '<path d="M112 82 L356 82" stroke="url(#toL)" stroke-width="3"/>' +
+      '<rect x="330" y="67" width="9" height="22" rx="2" fill="none" stroke="rgba(6,8,12,.22)" stroke-width=".9"/>' +
+      '<path fill="url(#toG)" d="M352 68 C362 69 370 73 373 78 L357 78 C355 74 354 71 352 68 Z"/>' +
+      '<path fill="url(#toB)" stroke="rgba(6,8,12,.2)" stroke-width=".8" d="M176 59 C192 52 238 52 258 56 L260 62 L176 62 Z"/>' +
+      '<ellipse cx="202" cy="75" rx="26" ry="5" fill="url(#exh)" id="exhaust"/>' +
+      '<path fill="url(#toB)" stroke="rgba(6,8,12,.2)" stroke-width=".8" d="M204 62 L264 61 C276 61 284 67 284 73 C284 79 276 85 264 85 L214 85 C208 85 203 81 203 76 Z"/>' +
+      '<path d="M272 62 L272 84" stroke="rgba(6,8,12,.25)"/>' +
+      '<ellipse cx="290" cy="73" rx="3.5" ry="31" fill="url(#toP)"/>' +
+      '<g class="ac-blades"><path class="ac-blade" d="M290 73 L288.6 44 Q290 41 291.4 44 Z M290 73 L288.6 102 Q290 105 291.4 102 Z"/></g>' +
+      '<g class="ac-blades" style="animation-delay:-.035s"><path class="ac-blade" d="M290 73 L288.6 44 Q290 41 291.4 44 Z M290 73 L288.6 102 Q290 105 291.4 102 Z"/></g>' +
+      '<path fill="url(#toB)" d="M283 66 Q300 73 283 80 Z"/>' +
     '</svg>';
 
   /* =======================================================

@@ -243,6 +243,21 @@ body.has-cursor .cursor-dot, body.has-cursor .cursor-ring { opacity: 1; }
 .fc-title { margin: 0; font-size: 15px; color: var(--muted); }
 .fc-title b { color: var(--ink); font-weight: 600; }
 
+/* Now */
+.now-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 20px; }
+.now-card { position: relative; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; background: var(--bg); display: flex; flex-direction: column; gap: 10px; overflow: hidden; transition: border-color .3s, transform .5s var(--ease); }
+.now-card:hover { border-color: var(--line-2); transform: translateY(-4px); }
+.now-card::after { content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: var(--grad); transform: scaleX(0); transform-origin: 0; transition: transform .6s var(--ease); }
+.now-card:hover::after { transform: scaleX(1); }
+.now-card.off { background: linear-gradient(160deg, rgba(183, 156, 255, .08), transparent 60%), var(--bg); }
+.now-top { display: flex; justify-content: space-between; gap: 10px; font: 500 12px var(--mono); }
+.now-status { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+.now-card.off .now-status { color: var(--batt); }
+.now-tag { color: var(--dim); }
+.now-card h3 { margin: 6px 0 0; font-size: 22px; letter-spacing: -.02em; font-weight: 600; line-height: 1.15; }
+.now-card p { margin: 0; color: var(--muted); font-size: 15px; }
+@media (max-width: 600px) { .now-grid { grid-template-columns: 1fr; } }
+
 /* =========================================================
    HEART architecture viewer
    ========================================================= */
@@ -294,6 +309,10 @@ body.has-cursor .cursor-dot, body.has-cursor .cursor-ring { opacity: 1; }
 .ac-disc { fill: rgba(255, 255, 255, .09); stroke: rgba(255, 255, 255, .18); stroke-width: .8; }
 .ac-prop { stroke: #2b3440; stroke-width: 5; stroke-linecap: round; transform-box: fill-box; transform-origin: center; animation: prop .14s linear infinite; }
 @keyframes prop { 0% { transform: scaleY(1); } 50% { transform: scaleY(-1); } 100% { transform: scaleY(1); } }
+.ac-blades { transform-box: fill-box; transform-origin: center; animation: prop .14s linear infinite; }
+.ac-blade { fill: #1e2631; }
+.arch-visual svg { filter: drop-shadow(0 26px 24px rgba(0, 0, 0, .55)); }
+.takeoff svg { filter: drop-shadow(0 18px 16px rgba(0, 0, 0, .5)); }
 .ac-body { transform-box: view-box; transition: transform 1.1s var(--ease); }
 .comp { opacity: 0; transition: opacity .6s var(--ease); cursor: help; }
 .comp.on { opacity: 1; }
@@ -337,6 +356,22 @@ body.has-cursor .cursor-dot, body.has-cursor .cursor-ring { opacity: 1; }
 .loop-center .t2 { font: 400 13px var(--sans); fill: var(--muted); text-anchor: middle; }
 .loop-center .t3 { font: 500 12px var(--mono); fill: var(--accent); text-anchor: middle; }
 .loop-dot { fill: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); }
+
+.wf-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: start; margin-top: 12px; }
+.wf-info { padding: 8px 0 0; gap: 14px; }
+.wf-lead { color: var(--muted); margin: 0; }
+.wf-io { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.wf-io span { font: 500 11px var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .06em; width: 34px; }
+.wf-io i { font-style: normal; font-size: 13px; padding: 5px 11px; border: 1px dashed var(--line-2); border-radius: 999px; color: var(--ink); }
+.wf-info .wf-list li { padding: 10px 14px; font-size: 15px; }
+.wf-info .wf-list li::before { content: none; }
+.wf-list .wf-head { font: 500 11px var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .06em; padding: 12px 14px 4px; background: none; }
+.wf-list li small { display: block; max-height: 0; overflow: hidden; opacity: 0; font-size: 13px; color: var(--muted); font-weight: 400; transition: max-height .4s var(--ease), opacity .3s, margin .3s; }
+.wf-list li.on small { max-height: 60px; opacity: 1; margin-top: 3px; }
+.loop-node.small .idx { font-size: 10px; }
+.wf-center { font: 500 11px var(--mono); fill: var(--dim); text-anchor: middle; letter-spacing: .08em; }
+.wf-status { text-align: center; font: 500 12.5px var(--mono); color: var(--accent); margin: 6px 0 0; min-height: 1.4em; }
+@media (max-width: 900px) { .wf-grid { grid-template-columns: 1fr; gap: 20px; } }
 
 /* =========================================================
    Exploration
